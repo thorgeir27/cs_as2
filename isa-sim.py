@@ -297,8 +297,10 @@ class InstructionMemory:
             if address in self.instruction_memory:
                 print('Address ' + str(address) + ' = ', end='')
                 self.print_instruction(address)
-
-
+                
+def executeInstruction(opcode, address):
+    if opcode == 'ADD':
+        registerFile.write_register(instructionMemory.read_operand_1(address), registerFile.read_register(instructionMemory.read_operand_2(address)) + registerFile.read_register(instructionMemory.read_operand_2(address)))
 
 current_cycle=0
 program_counter=0
@@ -310,7 +312,15 @@ instructionMemory = InstructionMemory()
 print('\n---Start of simulation---')
 
 #####################################
-##      Write your code here      ##
+'''
+registerFile.print_all()
+dataMemory.print_all()
+instructionMemory.print_program()
+'''
+
+executeInstruction('ADD',3)
+registerFile.print_register('R3')
+
 ####################################
 
 print('\n---End of simulation---\n')
