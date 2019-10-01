@@ -312,14 +312,13 @@ instructionMemory = InstructionMemory()
 print('\n---Start of simulation---')
 
 #####################################
-'''
-registerFile.print_all()
-dataMemory.print_all()
-instructionMemory.print_program()
-'''
+for i in range(max_cycles):
+    
+    oppcode = instructionMemory.read_opcode(program_counter)
+    
+    if oppcode == 'ADD':
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), registerFile.read_register(instructionMemory.read_operand_2(program_counter)) + registerFile.read_register(instructionMemory.read_operand_2(program_counter)))
 
-executeInstruction('ADD',3)
-registerFile.print_register('R3')
 
 ####################################
 
