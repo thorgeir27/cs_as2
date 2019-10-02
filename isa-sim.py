@@ -301,7 +301,10 @@ class InstructionMemory:
 def executeInstruction(opcode, address):
     if opcode == 'ADD':
         registerFile.write_register(instructionMemory.read_operand_1(address), registerFile.read_register(instructionMemory.read_operand_2(address)) + registerFile.read_register(instructionMemory.read_operand_2(address)))
-
+    elif opcode == 'SUB':
+         registerFile.write_register(instructionMemory.read_operand_1(address), registerFile.read_register(instructionMemory.read_operand_2(address)) - registerFile.read_register(instructionMemory.read_operand_3(address)))
+    elif opcode == 'OR':
+         registerFile.write_register(instructionMemory.read_operand_1(address),
 current_cycle=0
 program_counter=0
 
