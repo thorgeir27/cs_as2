@@ -298,10 +298,6 @@ class InstructionMemory:
                 print('Address ' + str(address) + ' = ', end='')
                 self.print_instruction(address)
                 
-def executeInstruction(opcode, address):
-    if opcode == 'ADD':
-        registerFile.write_register(instructionMemory.read_operand_1(address), registerFile.read_register(instructionMemory.read_operand_2(address)) + registerFile.read_register(instructionMemory.read_operand_2(address)))
-
 current_cycle=0
 program_counter=0
 
@@ -309,17 +305,107 @@ registerFile = RegisterFile()
 dataMemory = DataMemory()
 instructionMemory = InstructionMemory()
 
+instructionMemory.print_program()
+
 print('\n---Start of simulation---')
 
-#####################################
-for i in range(max_cycles):
+# Loop trough program
+for current_cycle in range(max_cycles):
+    
+    print('\n--- Cycle', current_cycle, '---')
+    print('program_counter =', program_counter, '\n')
+    #Print instruction that will be executed
+    print('Instruction to be executed:')
+    instructionMemory.print_instruction(program_counter)
+    print('')
     
     oppcode = instructionMemory.read_opcode(program_counter)
     
     if oppcode == 'ADD':
-        registerFile.write_register(instructionMemory.read_operand_1(program_counter), registerFile.read_register(instructionMemory.read_operand_2(program_counter)) + registerFile.read_register(instructionMemory.read_operand_2(program_counter)))
-
-
+        # Print registers
+        registerFile.print_register(instructionMemory.read_operand_2(program_counter))
+        registerFile.print_register(instructionMemory.read_operand_3(program_counter))
+        # Execute
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), registerFile.read_register(instructionMemory.read_operand_2(program_counter)) + registerFile.read_register(instructionMemory.read_operand_3(program_counter)))
+        # Print register
+        print('\nAfter execution:')
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        # increment program counter
+        program_counter += 1
+    elif oppcode == 'SUB':
+        registerFile.print_register(instructionMemory.read_operand_2(program_counter))
+        registerFile.print_register(instructionMemory.read_operand_3(program_counter))
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), registerFile.read_register(instructionMemory.read_operand_2(program_counter)) - registerFile.read_register(instructionMemory.read_operand_3(program_counter)))
+        print('\nAfter execution:')
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        program_counter += 1
+    elif oppcode == 'OR':
+        registerFile.print_register(instructionMemory.read_operand_2(program_counter))
+        registerFile.print_register(instructionMemory.read_operand_3(program_counter))
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), registerFile.read_register(instructionMemory.read_operand_2(program_counter)) | registerFile.read_register(instructionMemory.read_operand_3(program_counter)))
+        print('\nAfter execution:')
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        program_counter += 1
+    elif oppcode == 'AND':
+        registerFile.print_register(instructionMemory.read_operand_2(program_counter))
+        registerFile.print_register(instructionMemory.read_operand_3(program_counter))
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), registerFile.read_register(instructionMemory.read_operand_2(program_counter)) & registerFile.read_register(instructionMemory.read_operand_3(program_counter)))
+        print('\nAfter execution:')
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        program_counter += 1
+    elif oppcode == 'NOT':
+        registerFile.print_register(instructionMemory.read_operand_2(program_counter))
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), ~registerFile.read_register(instructionMemory.read_operand_2(program_counter)))
+        print('\nAfter execution:')
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        program_counter += 1
+    elif oppcode == 'LI':
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), int(instructionMemory.read_operand_2(program_counter)))
+        print('\nAfter execution:')
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        program_counter += 1
+    elif oppcode == 'LD':
+        dataMemory.print_data(registerFile.read_register(instructionMemory.read_operand_2(program_counter)))
+        registerFile.write_register(instructionMemory.read_operand_1(program_counter), dataMemory.read_data(registerFile.read_register(instructionMemory.read_operand_2(program_counter))))
+        print('\nAfter execution:')
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        program_counter += 1
+    elif oppcode == 'SD':
+        registerFile.print_register(instructionMemory.read_operand_1(program_counter))
+        dataMemory.write_data(registerFile.read_register(instructionMemory.read_operand_2(program_counter)), registerFile.read_register(instructionMemory.read_operand_1(program_counter)))
+        print('\nAfter execution:')
+        dataMemory.print_data(registerFile.read_register(instructionMemory.read_operand_2(program_counter)))
+        program_counter += 1
+    elif oppcode == 'JR':
+        program_counter = registerFile.read_register(instructionMemory.read_operand_1(program_counter))
+        print('\nAfter execution:')
+        print('program_counter =', program_counter)
+    elif oppcode == 'JEQ':
+        registerFile.print_register(instructionMemory.read_operand_2(program_counter))
+        registerFile.print_register(instructionMemory.read_operand_3(program_counter))
+        if registerFile.read_register(instructionMemory.read_operand_2(program_counter)) == registerFile.read_register(instructionMemory.read_operand_3(program_counter)):
+            program_counter = registerFile.read_register(instructionMemory.read_operand_1(program_counter))
+        else:
+            program_counter += 1
+        print('\nAfter execution:')
+        print('program_counter =', program_counter)
+    elif oppcode == 'JLT':
+        registerFile.print_register(instructionMemory.read_operand_2(program_counter))
+        registerFile.print_register(instructionMemory.read_operand_3(program_counter))
+        if registerFile.read_register(instructionMemory.read_operand_2(program_counter)) < registerFile.read_register(instructionMemory.read_operand_3(program_counter)):
+            program_counter = registerFile.read_register(instructionMemory.read_operand_1(program_counter))
+        else:
+            program_counter += 1
+        print('\nAfter execution:')
+        print('program_counter =', program_counter)
+    elif oppcode == 'NOP':
+        program_counter += 1
+    elif oppcode == 'END':
+        break
+    
 ####################################
 
 print('\n---End of simulation---\n')
+
+registerFile.print_all()
+dataMemory.print_used()
