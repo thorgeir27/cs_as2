@@ -1,0 +1,23 @@
+1: LD R1, R0; # Load memory(0)
+2: LI R2, 1; # Load 1 to increment
+3: LI R3, 0; # Memory pointer
+4: LI R4, 1; # Load f1
+5: LI R5, 1; # Load f2
+6: LI R7, 22; # END instruction
+7: LI R8, 14; # Load loop start
+8: JLT R7, R1, R5; # If R1 is less than 1 goto end
+9: SD R4, R3; # Store f1
+10: ADD R3, R3, R2; # Increment mem pointer
+11: SD R5, R3; # Store f2
+12: ADD R3, R3, R2; # Increment mem pointer
+13: ADD R6, R4, R5; # f3
+14: JLT R7, R6, R5; # Control overflow
+15: JLT R7, R1, R6; # If R1 less than f3 goto end
+16: ADD R4, R5, R0; # R4 <- R5
+17: ADD R5, R6, R0; # R5 <- R6
+18: SD R5, R3;
+19: ADD R3, R3, R2; # Increment mem pointer
+20: ADD R6, R4, R5;
+21: JR R8; #
+22: END;
+

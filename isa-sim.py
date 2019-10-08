@@ -312,6 +312,7 @@ print('\n---Start of simulation---')
 # Loop trough program
 for current_cycle in range(max_cycles):
     
+    # Print cycle and pc
     print('\n--- Cycle', current_cycle, '---')
     print('program_counter =', program_counter, '\n')
     #Print instruction that will be executed
@@ -407,5 +408,8 @@ for current_cycle in range(max_cycles):
 
 print('\n---End of simulation---\n')
 
+print('Executed in', current_cycle, 'cycles\n')
+
 registerFile.print_all()
+print('')
 dataMemory.print_used()
